@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+<head>
+    <meta charset='utf-8'>
+    <title>Torch | Five simple examples</title>
+    <link rel='stylesheet' href='static/flow.css' type='text/css'/>
+    <link rel="stylesheet" href='static/pygments.css' type='text/css'/>
+    <link rel='shortcut icon' href='static/favicon.png'>
+    <meta name='viewport' content='width=480'>
+    <meta property='og:type' content='website'>
+    <meta property="og:title" content="Torch | Five simple examples" />
+    <meta property='og:description' content='Torch is a scientific computing framework for LuaJIT.'>
+    <meta property='og:image' content='http://torch.chstatic/torch_logo.png'>
+    <script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script>
+    <script type="text/javascript">{'try{Typekit.load();}catch(e){}'}</script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-49208336-4', 'auto');
+      ga('send', 'pageview');
+    </script>
+</head>
+<body>
+
+<header class='topbar'><nav class='width'>
+<a href='/'>
+  <img src="static/torch-logo.png" class="logo">
+</a>
+    <ul>
+      <li><a href="getting-started.html#_"
+          
+          class="active" >
+          Docs
+      </a></li>
+      <li><a href="https://github.com/torch/torch7/wiki/Cheatsheet"
+          >
+          Community Wiki
+      </a></li>
+      <li><a href="whoweare.html"
+          >
+          Who we are
+      </a></li>
+      <li><a href="support.html"
+          >
+          Support
+      </a></li>
+      <li><a href="http://github.com/torch/torch7">GitHub</a>
+    </ul>
+</nav></header>
+
+
+<section class='content'><div class='width'>
+
+<nav class='toc'>
+  
+    <section>
+      <h3>Quick Start</h3>
+      <ul>
+        
+          <li>
+            <a href="getting-started.html#_">
+              Getting started with Torch
+            </a>
+            
+          </li>
+        
+          <li>
+            <a href="/docs/five-simple-examples.html#_" class="active">
+              Five simple examples
+            </a>
+            
+          </li>
+        
+      </ul>
+    </section>
+  
+    <section>
+      <h3>Documentation</h3>
+      <ul>
+        
+          <li>
+            <a href="/docs/tutorials-demos.html#_">
+              Tutorials, Demos, Examples
+            </a>
+            
+          </li>
+        
+          <li>
+            <a href="/docs/package-docs.html#_">
+              Package Documentation
+            </a>
+            
+          </li>
+        
+      </ul>
+    </section>
+  
+</nav>
+
+
+<article class='withtoc'>
+    <h1>
+      Five simple examples
+      <a class="edit-page-link" href="https://github.com/torch/torch.github.io/tree/master/docs/00-five-simple-examples.md" target="_blank">Edit on GitHub</a>
+    </h1>
+    <p></p>
+
+    <p>Here are five simple hands-on steps, to get started with Torch!
+This tutorial supposes the package <code>torch</code> is already required via</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="nb">require</span> <span class="s1">&#39;</span><span class="s">torch&#39;</span>
+</code></pre></div>
+<p>or than you are using the REPL <code>th</code> (which requires it automatically).</p>
+
+<h2>1. Define a positive definite quadratic form</h2>
+
+<p>We rely on few torch functions here:</p>
+
+<ul>
+<li><code>rand()</code> which creates tensor drawn from uniform distribution</li>
+<li><code>t()</code> which transposes a tensor (note it returns a new view)</li>
+<li><code>dot()</code> which performs a dot product between two tensors</li>
+<li><code>eye()</code> which returns a identity matrix</li>
+<li><code>*</code> operator over matrices (which performs a matrix-vector or matrix-matrix multiplication)</li>
+</ul>
+
+<p>We first make sure the random seed is the same for everyone</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">torch</span><span class="p">.</span><span class="n">manualSeed</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+</code></pre></div><div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="c1">-- choose a dimension</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="c1">-- create a random NxN matrix</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+
+<span class="c1">-- make it symmetric positive</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="o">*</span><span class="n">A</span><span class="p">:</span><span class="n">t</span><span class="p">()</span>
+
+<span class="c1">-- make it definite</span>
+<span class="n">A</span><span class="p">:</span><span class="n">add</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">torch</span><span class="p">.</span><span class="n">eye</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+
+<span class="c1">-- add a linear term</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+<span class="c1">-- create the quadratic form</span>
+<span class="k">function</span> <span class="nf">J</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+   <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">x</span><span class="p">:</span><span class="n">dot</span><span class="p">(</span><span class="n">A</span><span class="o">*</span><span class="n">x</span><span class="p">)</span><span class="o">-</span><span class="n">b</span><span class="p">:</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Printing the function value (here on a random point) can be easily done with:</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="nb">print</span><span class="p">(</span><span class="n">J</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)))</span>
+</code></pre></div>
+<h2>2. Find the exact mimimum</h2>
+
+<p>We can inverse the matrix (which might not be numerically optimal)</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">xs</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">b</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">string.format</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">J(x^*) = %g&#39;</span><span class="p">,</span> <span class="n">J</span><span class="p">(</span><span class="n">xs</span><span class="p">)))</span>
+</code></pre></div>
+<h2>3. Search the minimum by gradient descent</h2>
+
+<p>We first define the gradient w.r.t. <code>x</code> of <code>J(x)</code>:</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="k">function</span> <span class="nf">dJ</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">A</span><span class="o">*</span><span class="n">x</span><span class="o">-</span><span class="n">b</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>We then define some current solution:</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</code></pre></div>
+<p>And then apply gradient descent (with a given learning rate <code>lr</code>) for a while:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">lr = 0.01
+for i=1,20000 do
+  x = x - dJ(x)*lr
+  -- we print the value of the objective function at each iteration
+  print(string.format(&#39;at iter %d J(x) = %f&#39;, i, J(x)))
+end
+</code></pre></div>
+<p>You should see</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">...
+at iter 19995 J(x) = -3.135664
+at iter 19996 J(x) = -3.135664
+at iter 19997 J(x) = -3.135665
+at iter 19998 J(x) = -3.135665
+at iter 19999 J(x) = -3.135665
+at iter 20000 J(x) = -3.135666
+</code></pre></div>
+<h2>4. Using the optim package</h2>
+
+<p>Want to use more advanced optimization techniques, like conjugate gradient
+or LBFGS? The <code>optim</code> package is there for that purpose!  First, we need to
+install it:</p>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh">luarocks install optim
+</code></pre></div>
+<h4>A word on local variables</h4>
+
+<p>In practice, it is <em>never</em> a good idea to use global variables. Use <code>local</code> at
+everywhere. In our examples, we have defined everything in global, such that
+they can be cut-and-pasted in the interpreter command line.
+Indeed, defining a local like:</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="kd">local</span> <span class="n">A</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+</code></pre></div>
+<p>will be only available to the current scope, which, when running the interpreter, is limited
+to the current input line. Subsequent lines would not have access to this local.</p>
+
+<p>In lua one can define a scope with the <code>do...end</code> directives:</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="k">do</span>
+   <span class="kd">local</span> <span class="n">A</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
+   <span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</code></pre></div>
+<p>If you cut-and-paste this in the command line, the first print will be a
+5x5 matrix (because the local <code>A</code> is defined for the duration of the scope
+<code>do...end</code>), but will be <code>nil</code> afterwards.</p>
+
+<h4>Defining a closure with an upvalue</h4>
+
+<p>We need to define a closure which returns both <code>J(x)</code> and <code>dJ(x)</code>.  Here we
+define a scope with <code>do...end</code>, such that the local variable <code>neval</code> is an
+upvalue to <code>JdJ(x)</code>: only <code>JdJ(x)</code> will be aware of it.  Note that in a
+script, one would not need to have the <code>do...end</code> scope, as the scope of
+<code>neval</code> would be until the end of the script file (and not the end of the
+line like the command line).</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="k">do</span>
+   <span class="kd">local</span> <span class="n">neval</span> <span class="o">=</span> <span class="mi">0</span>
+   <span class="k">function</span> <span class="nf">JdJ</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+      <span class="kd">local</span> <span class="n">Jx</span> <span class="o">=</span> <span class="n">J</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+      <span class="n">neval</span> <span class="o">=</span> <span class="n">neval</span> <span class="o">+</span> <span class="mi">1</span>
+      <span class="nb">print</span><span class="p">(</span><span class="nb">string.format</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">after %d evaluations J(x) = %f&#39;</span><span class="p">,</span> <span class="n">neval</span><span class="p">,</span> <span class="n">Jx</span><span class="p">))</span>
+      <span class="k">return</span> <span class="n">Jx</span><span class="p">,</span> <span class="n">dJ</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+   <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<h4>Training with optim</h4>
+
+<p>The package is not loaded by default, so let&#39;s require it:</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="nb">require</span> <span class="s1">&#39;</span><span class="s">optim&#39;</span>
+</code></pre></div>
+<p>We first define a state for conjugate gradient:</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="n">verbose</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+   <span class="n">maxIter</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>and now we train:</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">optim</span><span class="p">.</span><span class="n">cg</span><span class="p">(</span><span class="n">JdJ</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+</code></pre></div>
+<p>You should see something like:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">after 120 evaluation J(x) = -3.136835
+after 121 evaluation J(x) = -3.136836
+after 122 evaluation J(x) = -3.136837
+after 123 evaluation J(x) = -3.136838
+after 124 evaluation J(x) = -3.136840
+after 125 evaluation J(x) = -3.136838
+</code></pre></div>
+<h2>5. Plot</h2>
+
+<p>Plotting can be achieved in various ways. For example, one could use the
+recent <a href="https://github.com/facebook/iTorch">iTorch</a> package. Here, we are
+going to use <code>gnuplot</code>.</p>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh">luarocks install gnuplot
+</code></pre></div>
+<h3>Store intermediate function evaluations</h3>
+
+<p>We modify slightly the closure we had previously, such that it stores
+intermediate function evaluations (as well as the real time it took to
+train so far):</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">evaluations</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">time</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">timer</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">Timer</span><span class="p">()</span>
+<span class="n">neval</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">function</span> <span class="nf">JdJ</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+   <span class="kd">local</span> <span class="n">Jx</span> <span class="o">=</span> <span class="n">J</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+   <span class="n">neval</span> <span class="o">=</span> <span class="n">neval</span> <span class="o">+</span> <span class="mi">1</span>
+   <span class="nb">print</span><span class="p">(</span><span class="nb">string.format</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">after %d evaluations, J(x) = %f&#39;</span><span class="p">,</span> <span class="n">neval</span><span class="p">,</span> <span class="n">Jx</span><span class="p">))</span>
+   <span class="nb">table.insert</span><span class="p">(</span><span class="n">evaluations</span><span class="p">,</span> <span class="n">Jx</span><span class="p">)</span>
+   <span class="nb">table.insert</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">timer</span><span class="p">:</span><span class="n">time</span><span class="p">().</span><span class="n">real</span><span class="p">)</span>
+   <span class="k">return</span> <span class="n">Jx</span><span class="p">,</span> <span class="n">dJ</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Now we can train it:</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="n">verbose</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+   <span class="n">maxIter</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="p">}</span>
+
+<span class="n">x0</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">cgx</span> <span class="o">=</span> <span class="n">x0</span><span class="p">:</span><span class="n">clone</span><span class="p">()</span> <span class="c1">-- make a copy of x0</span>
+<span class="n">timer</span><span class="p">:</span><span class="n">reset</span><span class="p">()</span>
+<span class="n">optim</span><span class="p">.</span><span class="n">cg</span><span class="p">(</span><span class="n">JdJ</span><span class="p">,</span> <span class="n">cgx</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+</code></pre></div>
+<p>We convert the evaluations and time tables to tensors:
+<code>lua
+cgtime = torch.Tensor(time)
+cgevaluations = torch.Tensor(evaluations)
+</code></p>
+
+<h3>Add support for stochastic gradient descent</h3>
+
+<p>Let&#39;s add the training with stochastic gradient, using <code>optim</code>:</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">evaluations</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">time</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">neval</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">state</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="n">lr</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="p">}</span>
+
+<span class="c1">-- we start from the same starting point than for CG</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">x0</span><span class="p">:</span><span class="n">clone</span><span class="p">()</span>
+
+<span class="c1">-- reset the timer!</span>
+<span class="n">timer</span><span class="p">:</span><span class="n">reset</span><span class="p">()</span>
+
+<span class="c1">-- note that SGD optimizer requires us to do the loop</span>
+<span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span> <span class="k">do</span>
+  <span class="n">optim</span><span class="p">.</span><span class="n">sgd</span><span class="p">(</span><span class="n">JdJ</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">sgdtime</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="n">sgdevaluations</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">evaluations</span><span class="p">)</span>
+</code></pre></div>
+<h3>Final plot</h3>
+
+<p>We can now plot our graphs. A first simple approach is to use <code>gnuplot.plot(x, y)</code>.
+Here we preceed it with <code>gnuplot.figure()</code> to make sure plots are on different figures.</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">gnuplot</span><span class="p">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">gnuplot</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">cgtime</span><span class="p">,</span> <span class="n">cgevaluations</span><span class="p">)</span>
+
+<span class="n">gnuplot</span><span class="p">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">gnuplot</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sgdtime</span><span class="p">,</span> <span class="n">sgdevaluations</span><span class="p">)</span>
+</code></pre></div>
+<p>A more advanced way, which plots everything on the same graph would be the following. Here we save everything
+in a PNG file.</p>
+<div class="highlight"><pre><code class="language-lua" data-lang="lua"><span class="n">gnuplot</span><span class="p">.</span><span class="n">pngfigure</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">plot.png&#39;</span><span class="p">)</span>
+<span class="n">gnuplot</span><span class="p">.</span><span class="n">plot</span><span class="p">(</span>
+   <span class="p">{</span><span class="s1">&#39;</span><span class="s">CG&#39;</span><span class="p">,</span>  <span class="n">cgtime</span><span class="p">,</span>  <span class="n">cgevaluations</span><span class="p">,</span>  <span class="s1">&#39;</span><span class="s">-&#39;</span><span class="p">},</span>
+   <span class="p">{</span><span class="s1">&#39;</span><span class="s">SGD&#39;</span><span class="p">,</span> <span class="n">sgdtime</span><span class="p">,</span> <span class="n">sgdevaluations</span><span class="p">,</span> <span class="s1">&#39;</span><span class="s">-&#39;</span><span class="p">})</span>
+<span class="n">gnuplot</span><span class="p">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">time (s)&#39;</span><span class="p">)</span>
+<span class="n">gnuplot</span><span class="p">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;</span><span class="s">J(x)&#39;</span><span class="p">)</span>
+<span class="n">gnuplot</span><span class="p">.</span><span class="n">plotflush</span><span class="p">()</span>
+</code></pre></div>
+<p><img src="images/plot.png" alt="CG vs SGD"></p>
+
+
+    <div class="docs-prevnext">
+      
+        <a href="getting-started.html#_">&larr; Prev</a>
+      
+      
+    </div>
+
+    <a id="_"></a>
+</article>
+
+</div></section>
+<footer><div class='width'>
+    Torch7 maintained by Ronan, Clément, Koray and Soumith.
+</div></footer>
+
+<script src="static/linkify.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#">
+<head>
+    <meta charset='utf-8'>
+    <title>Torch | Getting started with Torch</title>
+    <link rel='stylesheet' href='static/flow.css' type='text/css'/>
+    <link rel="stylesheet" href='static/pygments.css' type='text/css'/>
+    <link rel='shortcut icon' href='static/favicon.png'>
+    <meta name='viewport' content='width=480'>
+    <meta property='og:type' content='website'>
+    <meta property="og:title" content="Torch | Getting started with Torch" />
+    <meta property='og:description' content='Torch is a scientific computing framework for LuaJIT.'>
+    <meta property='og:image' content='http://torch.chstatic/torch_logo.png'>
+    <script type="text/javascript" src="//use.typekit.net/vqa1hcx.js"></script>
+    <script type="text/javascript">{'try{Typekit.load();}catch(e){}'}</script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-49208336-4', 'auto');
+      ga('send', 'pageview');
+    </script>
+</head>
+<body>
+
+<header class='topbar'><nav class='width'>
+<a href='/'>
+  <img src="static/torch-logo.png" class="logo">
+</a>
+    <ul>
+      <li><a href="getting-started.html#_"
+          
+          class="active" >
+          Docs
+      </a></li>
+      <li><a href="https://github.com/torch/torch7/wiki/Cheatsheet"
+          >
+          Community Wiki
+      </a></li>
+      <li><a href="whoweare.html"
+          >
+          Who we are
+      </a></li>
+      <li><a href="support.html"
+          >
+          Support
+      </a></li>
+      <li><a href="http://github.com/torch/torch7">GitHub</a>
+    </ul>
+</nav></header>
+
+
+<section class='content'><div class='width'>
+
+<nav class='toc'>
+  
+    <section>
+      <h3>Quick Start</h3>
+      <ul>
+        
+          <li>
+            <a href="getting-started.html#_" class="active">
+              Getting started with Torch
+            </a>
+            
+          </li>
+        
+          <li>
+            <a href="/docs/five-simple-examples.html#_">
+              Five simple examples
+            </a>
+            
+          </li>
+        
+      </ul>
+    </section>
+  
+    <section>
+      <h3>Documentation</h3>
+      <ul>
+        
+          <li>
+            <a href="/docs/tutorials-demos.html#_">
+              Tutorials, Demos, Examples
+            </a>
+            
+          </li>
+        
+          <li>
+            <a href="/docs/package-docs.html#_">
+              Package Documentation
+            </a>
+            
+          </li>
+        
+      </ul>
+    </section>
+  
+</nav>
+
+
+<article class='withtoc'>
+    <h1>
+      Getting started with Torch
+      <a class="edit-page-link" href="https://github.com/torch/torch.github.io/tree/master/docs/00-getting-started.md" target="_blank">Edit on GitHub</a>
+    </h1>
+    <p></p>
+
+    <h2>Installing Torch</h2>
+
+<p>We provide a simple installation process for Torch on Mac OS X and Ubuntu 12+:</p>
+
+<p>Torch can be installed to your home folder in ~/torch by running these three commands:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># in a terminal, run the commands</span>
+curl -sk https://raw.githubusercontent.com/torch/ezinstall/master/install-deps <span class="p">|</span> bash
+git clone https://github.com/torch/distro.git ~/torch --recursive
+<span class="nb">cd</span> ~/torch<span class="p">;</span> ./install.sh
+</code></pre></div>
+<p>The <a href="https://raw.githubusercontent.com/torch/ezinstall/master/install-deps">first script</a> 
+installs the basic package dependencies that LuaJIT and Torch require. 
+The <a href="https://raw.githubusercontent.com/torch/distro/master/install.sh">second script</a> 
+installs <a href="http://luajit.org/luajit.html">LuaJIT</a>, <a href="http://luarocks.org/">LuaRocks</a>, 
+and then uses LuaRocks (the lua package manager) to install core packages like
+<a href="https://github.com/torch/torch7/blob/master/README.md">torch</a>, 
+<a href="https://github.com/torch/nn/blob/master/README.md">nn</a> and 
+<a href="https://github.com/torch/paths/blob/master/README.md">paths</a>, as well as a few other packages. </p>
+
+<p>The script adds torch to your PATH variable. You just have to source it once to refresh your env variables</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># On Linux</span>
+<span class="nb">source</span> ~/.bashrc
+<span class="c"># On OSX</span>
+<span class="nb">source</span> ~/.profile
+</code></pre></div>
+<p>If you ever need to uninstall torch, simply run the command:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">rm -rf ~/torch
+</code></pre></div>
+<p>New packages can be installed using Luarocks from the command-line:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>luarocks install image
+<span class="nv">$ </span>luarocks list
+</code></pre></div>
+<p>Once installed you can run torch with the command &quot;th&quot; from you prompt!</p>
+
+<p>The easiest way to learn and experiment with Torch is by starting an
+interactive session (also known as the torch read-eval-print loop or <a href="https://github.com/torch/trepl/blob/master/README.md">TREPL</a>):</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>th
+
+  ______             __   <span class="p">|</span>  Torch7                                   
+ /_  __/__  ________/ /   <span class="p">|</span>  Scientific computing <span class="k">for</span> Lua.         
+  / / / _ <span class="se">\/</span> __/ __/ _ <span class="se">\ </span> <span class="p">|</span>                                           
+ /_/  <span class="se">\_</span>__/_/  <span class="se">\_</span>_/_//_/  <span class="p">|</span>  https://github.com/torch   
+                          <span class="p">|</span>  http://torch.ch            
+
+th&gt; torch.Tensor<span class="o">{</span>1,2,3<span class="o">}</span>
+ 1
+ 2
+ 3
+<span class="o">[</span>torch.DoubleTensor of dimension 3<span class="o">]</span>
+
+th&gt;
+</code></pre></div>
+<p>To exit the interactive session, type <code>^c</code> twice — the control key
+together with the <code>c</code> key, twice, or type <code>os.exit()</code>.
+Once the user has entered a complete expression, such as <code>1 + 2</code>, and
+hits enter, the interactive session evaluates the expression and shows
+its value. </p>
+
+<p>To evaluate expressions written in a source file <code>file.lua</code>, write
+<code>th&gt; dofile &quot;file.lua&quot;</code>.</p>
+
+<p>To run code in a file non-interactively, you can give it as the first
+argument to the <code>th</code> command::</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>th file.lua
+</code></pre></div>
+<p>There are various ways to run Lua code and provide options, similar to
+those available for the <code>perl</code> and <code>ruby</code> programs:</p>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"> <span class="nv">$ </span>th -h
+Usage: th <span class="o">[</span>options<span class="o">]</span> <span class="o">[</span>script.lua <span class="o">[</span>arguments<span class="o">]]</span>
+
+Options:
+  -l name            load library name
+  -e statement       execute statement
+  -h,--help          print this <span class="nb">help</span>
+  -a,--async         preload async <span class="o">(</span>libuv<span class="o">)</span> and start async repl <span class="o">(</span>BETA<span class="o">)</span>
+  -g,--globals       monitor global variables <span class="o">(</span>print a warning on creation/access<span class="o">)</span>
+  -gg,--gglobals     monitor global variables <span class="o">(</span>throw an error on creation/access<span class="o">)</span>
+  -x,--gfx           start gfx server and load gfx env
+  -i,--interactive   enter the REPL after executing a script
+</code></pre></div>
+<p>TREPL is full of convenient features likes:</p>
+
+<ul>
+<li>Tab-completion on nested namespaces</li>
+<li>Tab-completion on disk files (when opening a string)</li>
+<li>History (preserved between sessions)</li>
+<li>Pretty print (table introspection and coloring)</li>
+<li>Auto-print after eval (can be stopped with ;)</li>
+<li>Each command is profiled, timing is reported</li>
+<li>No need for &#39;=&#39; to print</li>
+<li>Easy help with: <code>? funcname</code></li>
+<li>Self help: <code>?</code></li>
+<li>Shell commands with: $ cmd (example: <code>$ ls</code>)</li>
+</ul>
+
+<h3>Next steps</h3>
+
+<p>In addition to this manual, there are various other resources that may
+help new users get started with torch, all summarized in this <a href="https://github.com/torch/torch7/wiki/Cheatsheet">Cheatsheet</a></p>
+
+<p>The cheatsheet provides links to tutorials, demos, package summaries and a lot of useful information.</p>
+
+<p>If you have a question, please come join the <a href="https://groups.google.com/forum/embed/?place=forum/torch7#!forum/torch7">Torch users mailing list</a></p>
+
+
+    <div class="docs-prevnext">
+      
+      
+        <a class="right" href="/docs/five-simple-examples.html#_">Next &rarr;</a>
+      
+    </div>
+
+    <a id="_"></a>
+</article>
+
+</div></section>
+<footer><div class='width'>
+    Torch7 maintained by Ronan, Clément, Koray and Soumith.
+</div></footer>
+
+<script src="static/linkify.js"></script>
+</body>
+</html>
+
